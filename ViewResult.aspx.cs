@@ -12,6 +12,43 @@ public partial class ViewResult : System.Web.UI.Page
     static string mycon = System.Configuration.ConfigurationManager.ConnectionStrings["mycon"].ConnectionString;
     protected void Page_Load(object sender, EventArgs e)
     {
+
+        SqlConnection consql = new SqlConnection(mycon);
+        consql.Open();
+        string qrysql = "SELECT * FROM LOGINTB WHERE USERID='" + Request.QueryString["ID"] + "'";
+        SqlCommand cmdsql = new SqlCommand(qrysql, consql);
+        SqlDataReader sdrsql = cmdsql.ExecuteReader();
+        if (sdrsql.Read())
+        {
+            if (Convert.ToInt32(sdrsql["MEMBERSTAT"])==3)
+            {
+                qrysql = "SELECT * FROM STUDENT WHERE PARENTID='" + Request.QueryString["ID"] + "'";
+                cmdsql = new SqlCommand(qrysql, consql);
+                sdrsql.Close();
+                sdrsql = cmdsql.ExecuteReader();
+                if (sdrsql.Read())
+                {
+                    Response.Redirect("ViewResult.aspx?ID=" + sdrsql["ID"].ToString());
+                }
+            }
+          
+
+        }
+        consql.Close();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         int rowcounter = 0;
         StringBuilder html = new StringBuilder();
         html.Append("<div>");

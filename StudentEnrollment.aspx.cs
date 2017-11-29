@@ -12,14 +12,47 @@ using System.Text;
 
 public partial class StudentEnrollment : System.Web.UI.Page
 {
+    string conStr = ConfigurationManager.ConnectionStrings["mycon"].ConnectionString;
     protected void Page_Load(object sender, EventArgs e)
     {
         StudentID1.Text = Request.QueryString["ID"].ToString();
+        SqlConnection con = new SqlConnection(conStr);
+        con.Open();
+        string qry = "SELECT * FROM STUDENT WHERE ID='" + Request.QueryString["ID"] + "'";
+        SqlCommand cmd = new SqlCommand(qry, con);
+        SqlDataReader sdr = cmd.ExecuteReader();
+        if (sdr.Read())
+        {
+            StudentName1.Text= sdr["NAME"].ToString();
+            StudentCourse1.Text = sdr["COURSE"].ToString();
+
+        }
+
+        string qrysem = "select * from Semester order by Startdate desc";
+        SqlCommand cmdsem = new SqlCommand(qrysem, con);
+        SqlDataReader sdrsem = cmdsem.ExecuteReader();
+        if (sdrsem.Read())
+        {
+            DateTime today = DateTime.Today;
+            DateTime Cutoffdate = Convert.ToDateTime(sdrsem["STARTDATE"]);
+            Cutoffdate = Cutoffdate.AddDays(14);
+            if (today > Cutoffdate)
+            {
+                AddStudentSubjectB.Enabled = false;
+                
+            }
+
+        }
+
+
+
+        con.Close();
+
     }
 
     private DataSet GetData(string query)
     {
-        string conStr = ConfigurationManager.ConnectionStrings["mycon"].ConnectionString;
+        
         SqlCommand sqlCommand = new SqlCommand(query);
         using (SqlConnection sqlConnection = new SqlConnection(conStr))
         {

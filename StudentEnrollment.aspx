@@ -7,7 +7,7 @@
     <title>Student Enrollment</title>
 </head>
 <body>
-    <form id="form1" runat="server">
+    <form id="form1" runat="server" style="margin-left: 20px; margin-top: 20px">
         <h1>Student Enrollment</h1>
         <div>
             <asp:Label ID="StudentName" Text="Student Name: " runat="server" />
